@@ -4,42 +4,42 @@ import {
   ReactFlow,
   Background,
   Controls,
-  MiniMap,
   Panel,
   applyNodeChanges,
   applyEdgeChanges,
   addEdge,
+  FitViewOptions,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import CreateNodes from './component/createNodes.jsx';
-import CustomEdge from './component/editableEdges.jsx';
+import { BaseNodeFullDemo } from './component/BaseNodeFullDemo.jsx';
 
-const edgeTypes = {
-  custom: CustomEdge,
+const nodeTypes = {
+  baseNodeFull: BaseNodeFullDemo,
 };
-
-const onEdgeLabelChange = (edgeId, newLabel) => {
-  setEdges(eds => eds.map(e => e.id === edgeId ? { ...e, label: newLabel } : e));
-};
-
 
 const initialNodes = [
   {
-    id: '1',
-    type: 'input',
-    data: { label: 'Start Conversation' },
-    position: { x: 0, y: 0 },
+    id: '2',
+    type: 'baseNodeFull',
+    position: { x: 200, y: 200 },
+    data: {},
   },
 ];
 
+const fitViewOptions = {
+  padding: 100,
+};
+
 const initialEdges = [];
 
-let id = 2;
+let id = 3;
 const getId = () => `${id++}`;
 
 function App() {
   const [nodes, setNodes] = useState(initialNodes);
   const [edges, setEdges] = useState(initialEdges);
+  const [reactFlowInstance, setReactFlowInstance] = useState(null);
 
   const onNodesChange = useCallback(
     (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
@@ -54,24 +54,52 @@ function App() {
     []
   );
 
+  const onDragOver = useCallback((event) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+  }, []);
+
+  const onDrop = useCallback(
+    (event) => {
+      event.preventDefault();
+      if (!reactFlowInstance) return;
+
+      const reactFlowBounds = event.currentTarget.getBoundingClientRect();
+      const position = reactFlowInstance.project({
+        x: event.clientX - reactFlowBounds.left,
+        y: event.clientY - reactFlowBounds.top,
+      });
+
+      const newNode = {
+        id: getId(),
+        type: 'baseNodeFull',
+        position,
+        data: {},
+      };
+
+      setNodes((nds) => nds.concat(newNode));
+    },
+    [reactFlowInstance]
+  );
+
   return (
     <div className="app-wrapper">
       <ReactFlow
-        edgeTypes={edgeTypes}
-        edges={edges.map(e => ({ ...e, type: 'custom' }))}
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
-        nodes={nodes}
-        onNodesChange={onNodesChange}
-        selectionOnDrag={true}
-        multiSelectionKeyCode={null}
-        panOnDrag={true}
+        onInit={setReactFlowInstance}
+        onDrop={onDrop}
+        onDragOver={onDragOver}
+        nodeTypes={nodeTypes}
         fitView
+        fitViewOptions={fitViewOptions}
         deleteKeyCode={['Delete', 'Backspace']}
       >
         <Background />
         <Controls />
-        <MiniMap />
         <Panel position="top-left" style={{ padding: 10 }}>
           <CreateNodes setNodes={setNodes} getId={getId} />
         </Panel>

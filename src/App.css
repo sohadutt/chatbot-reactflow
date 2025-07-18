@@ -1,5 +1,13 @@
-* {
-  box-sizing: border-box;
+:root {
+  --surface: #f9f9f9;             /* Node background */
+  --border: #dcdcdc;              /* Borders */
+  --text: #1d1d1f;                /* Main text */
+  --text-muted: #6e6e73;          /* Muted text */
+  --accent: #007aff;              /* Accent color */
+  --btn-bg: #e6e6eb;              /* Button bg */
+  --btn-bg-hover: #dcdce0;
+  --btn-bg-active: #cfcfd6;
+  --shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 body, html, #root {
@@ -7,15 +15,11 @@ body, html, #root {
   padding: 0;
   height: 100%;
   width: 100%;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #141518 0%, #1f2228 100%);
-  color: #e1e1e1;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: var(--text);
   user-select: none;
 }
 
-/* Wrapper to fill viewport */
 .app-wrapper {
   height: 100vh;
   width: 100vw;
@@ -23,122 +27,176 @@ body, html, #root {
   flex-direction: column;
 }
 
-/* React Flow canvas background */
+/* React Flow canvas background: no background color */
 .react-flow__renderer {
-  background-color: #181a1f !important;
-  background-image:
-    radial-gradient(circle at 20% 20%, rgba(58, 142, 255, 0.1) 1px, transparent 2px),
-    radial-gradient(circle at 80% 80%, rgba(58, 142, 255, 0.05) 1px, transparent 2px);
-  background-size: 40px 40px;
+  background-image: none !important;
 }
 
-/* Background grid lines */
-.react-flow__background > svg {
-  stroke: #2e3440 !important;
-  stroke-width: 1;
-  opacity: 0.6;
+/* Cursor behavior on canvas */
+.react-flow__viewport {
+  cursor: default;
 }
 
-/* Controls panel */
-.react-flow__controls {
-  background-color: rgba(20, 24, 30, 0.75);
-  border-radius: 8px;
-  padding: 6px;
-  box-shadow: 0 0 15px rgba(58, 142, 255, 0.4);
-}
-
-/* MiniMap styling */
-.react-flow__minimap {
-  border-radius: 8px;
-  border: 1px solid #3a8eff;
-  box-shadow: 0 0 12px #3a8eff88;
-}
-
-/* Node styling overrides */
-.react-flow__node-default {
-  background: linear-gradient(145deg, #22272e, #1b1f26);
-  color: #cbd5e1;
-  padding: 12px 18px;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(58, 142, 255, 0.3);
-  font-size: 14px;
-  user-select: text;
-  cursor: grab;
-  transition: box-shadow 0.25s ease;
-}
-
-.react-flow__node-default:hover {
-  box-shadow: 0 4px 20px rgba(58, 142, 255, 0.7);
+.react-flow__viewport:active {
   cursor: grabbing;
 }
 
-/* Input node special style */
+/* Default Node */
+.react-flow__node-default {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 18px;
+  box-shadow: var(--shadow);
+  font-size: 15px;
+  cursor: pointer !important;
+}
+
+.react-flow__node-default:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Input Node */
 .react-flow__node-input {
-  background: linear-gradient(145deg, #3a8eff, #0056b3);
-  color: white;
+  background-color: var(--btn-bg);
+  color: var(--text);
   font-weight: 600;
-  box-shadow: 0 0 15px #3a8effcc;
+  cursor: pointer !important;
 }
 
-/* Edge label styling */
+/* Edge Labels */
 .react-flow__edge-text {
-  font-size: 12px;
-  fill: #3a8eff;
-  font-weight: 600;
-  text-shadow: 0 0 3px rgba(0, 86, 179, 0.6);
+  font-size: 13px;
+  fill: var(--text-muted);
+  font-weight: 500;
+  user-select: none;
 }
 
-/* Buttons in Panel */
-button.add-btn {
-  background-color: #3a8eff;
-  border: none;
+/* Controls */
+.react-flow__controls {
+  background: var(--surface);
   border-radius: 10px;
-  color: white;
-  padding: 8px 14px;
-  margin-right: 12px;
-  font-weight: 600;
-  font-size: 0.95rem;
-  cursor: pointer;
-  box-shadow: 0 0 8px #3a8effbb;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-button.add-btn:hover {
-  background-color: #0056b3;
-  box-shadow: 0 0 15px #0056b3cc;
+  padding: 6px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  cursor: pointer !important;
 }
 
 /* Panel container */
 .react-flow__panel {
-  background: rgba(24, 26, 31, 0.8);
-  backdrop-filter: saturate(180%) blur(10px);
-  border-radius: 14px;
-  box-shadow: 0 0 12px rgba(58, 142, 255, 0.3);
-  padding: 12px 16px;
-  user-select: none;
+  background-color: rgba(249, 249, 249, 0.85);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  cursor: default;
 }
 
-/* Scrollbar styling */
+/* Buttons inside panel */
+button.add-btn {
+  background-color: var(--btn-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  padding: 8px 14px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+button.add-btn:hover {
+  background-color: var(--btn-bg-hover);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+button.add-btn:active {
+  background-color: var(--btn-bg-active);
+}
+
+/* Handles (edge connectors) */
+.react-flow__handle {
+  cursor: pointer !important;
+}
+
+/* Scrollbars */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #3a8eff88;
+  background: var(--border);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3a8effcc;
+  background: var(--text-muted);
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 
-/* Responsive adjustments */
+/* Responsive */
 @media (max-width: 600px) {
   button.add-btn {
     padding: 6px 10px;
     font-size: 0.85rem;
-    margin-right: 8px;
   }
+}
+.custom-node {
+  background-color: #ffffff;
+  border: 1px solid #dcdcdc;
+  border-radius: 14px;
+  padding: 12px 18px;
+  width: 280px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: box-shadow 0.2s ease;
+}
+
+.custom-node:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.custom-node__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e1e1e1;
+  padding-bottom: 6px;
+}
+
+.custom-node__header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.custom-node__icon {
+  font-size: 20px;
+  color: #007aff; /* accent color */
+}
+
+.custom-node__title {
+  font-weight: 600;
+  font-size: 16px;
+  color: #1d1d1f;
+}
+
+.custom-node__header-right {
+  font-size: 22px;
+  color: #25d366; /* whatsapp green */
+}
+
+.custom-node__text {
+  font-size: 14px;
+  color: #5f5f5f;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
