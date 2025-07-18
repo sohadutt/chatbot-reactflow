@@ -1,56 +1,82 @@
-import { useState } from 'react'
-import './App.css'
-import { ReactFlow, Background, Controls } from '@xyflow/react';
+import { useCallback, useState } from 'react';
+import './App.css';
+import {
+  ReactFlow,
+  Background,
+  Controls,
+  MiniMap,
+  Panel,
+  applyNodeChanges,
+  applyEdgeChanges,
+  addEdge,
+} from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import CreateNodes from './component/createNodes';
-const nodes = [
-  {
-    id: 'node-1',
-    type: 'textUpdater',
-    position: { x: 0, y: 0 },
-    data: { value: 123 },
-  },
-];
-const nodeTypes = {
-  textUpdater: TextUpdaterNode,
+import CreateNodes from './component/createNodes.jsx';
+import CustomEdge from './component/editableEdges.jsx';
+
+const edgeTypes = {
+  custom: CustomEdge,
 };
 
-const initialEdges = [
+const onEdgeLabelChange = (edgeId, newLabel) => {
+  setEdges(eds => eds.map(e => e.id === edgeId ? { ...e, label: newLabel } : e));
+};
+
+
+const initialNodes = [
   {
-    id: 'node-1-node-2',
-    source: 'node-1',
-    target: 'n2',
-    type: 'step',
-    label: 'connects with',
+    id: '1',
+    type: 'input',
+    data: { label: 'Start Conversation' },
+    position: { x: 0, y: 0 },
   },
 ];
 
-const onNodesChange = useCallback(
-  (changes) => setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot)),
-  [],
-);
-const onEdgesChange = useCallback(
-  (changes) => setEdges((edgesSnapshot) => applyEdgeChanges(changes, edgesSnapshot)),
-  [],
-);
+const initialEdges = [];
 
-const onConnect = useCallback(
-  (params) => setEdges((edgesSnapshot) => addEdge(params, edgesSnapshot)),
-  [],
-);
+let id = 2;
+const getId = () => `${id++}`;
 
 function App() {
-const [nodes, setNodes] = useState(nodes);
+  const [nodes, setNodes] = useState(initialNodes);
   const [edges, setEdges] = useState(initialEdges);
 
+  const onNodesChange = useCallback(
+    (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
+    []
+  );
+  const onEdgesChange = useCallback(
+    (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
+    []
+  );
+  const onConnect = useCallback(
+    (params) => setEdges((eds) => addEdge({ ...params, animated: true }, eds)),
+    []
+  );
+
   return (
-    <div style={{ height: '100%', width: '100%' }}>
-      <ReactFlow>
+    <div className="app-wrapper">
+      <ReactFlow
+        edgeTypes={edgeTypes}
+        edges={edges.map(e => ({ ...e, type: 'custom' }))}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+        nodes={nodes}
+        onNodesChange={onNodesChange}
+        selectionOnDrag={true}
+        multiSelectionKeyCode={null}
+        fitView
+        deleteKeyCode={['Delete', 'Backspace']}
+      >
+        <Background />
         <Controls />
-        <CreateNodes />
+        <MiniMap />
+        <Panel position="top-left" style={{ padding: 10 }}>
+          <CreateNodes setNodes={setNodes} getId={getId} />
+        </Panel>
       </ReactFlow>
-</div>
-);
+    </div>
+  );
 }
 
-export default App
+export default App;
