@@ -65,6 +65,7 @@ function App() {
         onNodesChange={onNodesChange}
         selectionOnDrag={true}
         multiSelectionKeyCode={null}
+        panOnDrag={true}
         fitView
         deleteKeyCode={['Delete', 'Backspace']}
       >
