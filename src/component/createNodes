@@ -1,0 +1,93 @@
+import { useCallback, useState } from 'react';
+import './App.css';
+import {
+  ReactFlow,
+  Background,
+  useNodesState,
+  useEdgesState,
+  addEdge,
+  Controls,
+  MiniMap,
+  Panel,
+} from '@xyflow/react';
+import '@xyflow/react/dist/style.css';
+
+const initialNodes = [
+  {
+    id: '1',
+    type: 'input',
+    data: { label: 'Start Conversation' },
+    position: { x: 0, y: 0 },
+  },
+];
+
+const initialEdges = [];
+
+let id = 2;
+const getId = () => `${id++}`;
+
+function CreateNodes() {
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  const onConnect = useCallback(
+    (params) => setEdges((eds) => addEdge({ ...params, animated: true }, eds)),
+    [setEdges]
+  );
+
+  const onNodesDelete = useCallback((deleted) => {
+    setNodes((nds) => nds.filter((node) => !deleted.find((d) => d.id === node.id)));
+  }, [setNodes]);
+
+  const onEdgesDelete = useCallback((deleted) => {
+    setEdges((eds) => eds.filter((edge) => !deleted.find((d) => d.id === edge.id)));
+  }, [setEdges]);
+
+  const addSendMessageNode = () => {
+    const newNode = {
+      id: getId(),
+      data: { label: 'Send Message' },
+      position: { x: Math.random() * 250, y: Math.random() * 250 },
+      style: { backgroundColor: '#e6f7ff', padding: 10, borderRadius: 8 },
+    };
+    setNodes((nds) => [...nds, newNode]);
+  };
+
+  const addUserResponseNode = () => {
+    const newNode = {
+      id: getId(),
+      data: { label: 'User Response' },
+      position: { x: Math.random() * 250 + 300, y: Math.random() * 250 },
+      style: { backgroundColor: '#fff7e6', padding: 10, borderRadius: 8 },
+    };
+    setNodes((nds) => [...nds, newNode]);
+  };
+
+  return (
+    <div style={{ height: '100vh', width: '100%' }}>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+        onNodesDelete={onNodesDelete}
+        onEdgesDelete={onEdgesDelete}
+        fitView
+        deleteKeyCode={['Backspace', 'Delete']} // allow delete key
+      >
+        <Background />
+        <Controls />
+        <MiniMap />
+        <Panel position="top-left" style={{ padding: 10 }}>
+          <button onClick={addSendMessageNode} style={{ marginRight: 10 }}>
+            ➕ Add Send Message
+          </button>
+          <button onClick={addUserResponseNode}>➕ Add User Response</button>
+        </Panel>
+      </ReactFlow>
+    </div>
+  );
+}
+
+export default CreateNodes;
