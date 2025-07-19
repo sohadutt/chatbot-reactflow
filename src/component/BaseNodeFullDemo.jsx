@@ -29,10 +29,10 @@ export const BaseNodeFullDemo = memo(({ data }) => {
       <Handle
         type="source"
         position={Position.Right}
-        className="w-10 h-10 bg-green-600 border-none"
+        className="w-10 h-10 bg-teal-200 border-none"
       />
 
-      <BaseNodeHeader className="bg-green-500 text-white rounded-t-md px-3 py-2 flex items-center gap-2">
+      <BaseNodeHeader className="bg-teal-300 text-black rounded-t-md px-3 py-2 flex items-center gap-2">
         <WhatsAppIcon />
         <BaseNodeHeaderTitle>Send Message</BaseNodeHeaderTitle>
       </BaseNodeHeader>

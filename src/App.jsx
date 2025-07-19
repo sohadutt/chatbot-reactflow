@@ -28,7 +28,7 @@ const initialNodes = [
     position: { x: 200, y: 200 },
     data: {
       id: "1",
-      message: `New Text Messege 1`,
+      message: `New Text Message 1`,
     },
   },
 ];
@@ -39,6 +39,7 @@ function App() {
   const [nodes, setNodes] = useState(initialNodes);
   const [edges, setEdges] = useState(initialEdges);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const [selectedNode, setSelectedNode] = useState(null);
 
   const onNodesChange = useCallback(
     (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
@@ -72,40 +73,124 @@ function App() {
     [reactFlowInstance]
   );
 
-  const onNodeClick = () => {
+  const onNodeClick = useCallback((event, node) => {
+    setSelectedNode(node);
+  }, []);
 
-  }
+  const onPaneClick = useCallback(() => {
+    setSelectedNode(null);
+  }, []);
 
+  const handleSaveConfig = () => {
+    const connectedNodeIds = new Set();
+    edges.forEach((edge) => {
+      connectedNodeIds.add(edge.source);
+      connectedNodeIds.add(edge.target);
+    });
 
-  const onPaneClick = () => {
-    
-  }
-
+    const unconnectedNodes = nodes.filter((node) => !connectedNodeIds.has(node.id));
+    if (unconnectedNodes.length > 0) {
+      alert("Error: Some nodes are not connected to any edge.");
+    } else {
+      alert("Config saved successfully!");
+    }
+  };
 
   return (
-    <div className="app-wrapper" style={{ height: "100vh" }}>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        onInit={setReactFlowInstance}
-        onDrop={onDrop}
-        onDragOver={onDragOver}
-        nodeTypes={nodeTypes}
-        fitView
-        fitViewOptions={{ padding: 100 }}
-        deleteKeyCode={["Delete", "Backspace"]}
-        onNodeClick={onNodeClick}
-        onPaneClick={onPaneClick}
+    <div className="app-wrapper" style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+      {/* Header */}
+      <div
+        style={{
+          padding: "10px 20px",
+          backgroundColor: "lightgrey",
+          color: "black",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
       >
-        <Background />
-        <Controls />
-        <Panel position="top-left" style={{ padding: 10 }}>
-          <CreateNodes setNodes={setNodes} getId={getId} />
-        </Panel>
-      </ReactFlow>
+        <h2 style={{ margin: 0 }}></h2>
+        <button
+          onClick={handleSaveConfig}
+          style={{
+            padding: "8px 16px",
+            backgroundColor: "#61dafb",
+            color: "#000",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}
+        >
+          Save Config
+        </button>
+      </div>
+
+      {/* Main Layout */}
+      <div style={{ display: "flex", flexDirection: "row", flexGrow: 1 }}>
+        <div style={{ flexGrow: 1, height: "100%" }}>
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            onInit={setReactFlowInstance}
+            onDrop={onDrop}
+            onDragOver={onDragOver}
+            nodeTypes={nodeTypes}
+            fitView
+            fitViewOptions={{ padding: 100 }}
+            deleteKeyCode={["Delete", "Backspace"]}
+            onNodeClick={onNodeClick}
+            onPaneClick={onPaneClick}
+          >
+            <Background />
+            <Controls />
+            <Panel position="top-left" style={{ padding: 10 }}>
+              <CreateNodes setNodes={setNodes} getId={getId} />
+            </Panel>
+          </ReactFlow>
+        </div>
+
+        {/* Sidebar */}
+        <div
+          style={{
+            width: 300,
+            height: "100%",
+            backgroundColor: "#f0f0f0",
+            padding: 20,
+            boxSizing: "border-box",
+            borderLeft: "1px solid #ddd",
+          }}
+        >
+          {selectedNode ? (
+            <>
+              <h3>Edit Node Message</h3>
+              <textarea
+                rows={5}
+                style={{ width: "100%" }}
+                value={selectedNode.data.message}
+                onChange={(e) => {
+                  const newMessage = e.target.value;
+                  setNodes((nds) =>
+                    nds.map((node) =>
+                      node.id === selectedNode.id
+                        ? { ...node, data: { ...node.data, message: newMessage } }
+                        : node
+                    )
+                  );
+                  setSelectedNode((node) => ({
+                    ...node,
+                    data: { ...node.data, message: newMessage },
+                  }));
+                }}
+              />
+            </>
+          ) : (
+            <p>Select a node to edit its message</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
