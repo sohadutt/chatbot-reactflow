@@ -1,5 +1,5 @@
-import { useCallback, useState } from 'react';
-import './App.css';
+import { useCallback, useState } from "react";
+import "./App.css";
 import {
   ReactFlow,
   Background,
@@ -8,33 +8,31 @@ import {
   applyNodeChanges,
   applyEdgeChanges,
   addEdge,
-  FitViewOptions,
-} from '@xyflow/react';
-import '@xyflow/react/dist/style.css';
-import CreateNodes from './component/createNodes.jsx';
-import { BaseNodeFullDemo } from './component/BaseNodeFullDemo.jsx';
+} from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
+
+import CreateNodes from "./component/createNodes.jsx";
+import { BaseNodeFullDemo } from "./component/BaseNodeFullDemo.jsx";
 
 const nodeTypes = {
   baseNodeFull: BaseNodeFullDemo,
 };
 
+let id = 2;
+const getId = () => `${id++}`;
+
 const initialNodes = [
   {
-    id: '2',
-    type: 'baseNodeFull',
+    id: "1",
+    type: "baseNodeFull",
     position: { x: 200, y: 200 },
-    data: {},
+    data: { id: "1", 
+      messe: 'New Text ${id}' 
+    },
   },
 ];
 
-const fitViewOptions = {
-  padding: 100,
-};
-
 const initialEdges = [];
-
-let id = 3;
-const getId = () => `${id++}`;
 
 function App() {
   const [nodes, setNodes] = useState(initialNodes);
@@ -56,7 +54,7 @@ function App() {
 
   const onDragOver = useCallback((event) => {
     event.preventDefault();
-    event.dataTransfer.dropEffect = 'move';
+    event.dataTransfer.dropEffect = "move";
   }, []);
 
   const onDrop = useCallback(
@@ -64,26 +62,30 @@ function App() {
       event.preventDefault();
       if (!reactFlowInstance) return;
 
-      const reactFlowBounds = event.currentTarget.getBoundingClientRect();
+      const bounds = event.currentTarget.getBoundingClientRect();
       const position = reactFlowInstance.project({
-        x: event.clientX - reactFlowBounds.left,
-        y: event.clientY - reactFlowBounds.top,
+        x: event.clientX - bounds.left,
+        y: event.clientY - bounds.top,
       });
 
+      const newNodeId = getId();
       const newNode = {
-        id: getId(),
-        type: 'baseNodeFull',
+        id: newNodeId,
+        type: "baseNodeFull",
         position,
-        data: {},
+        data: { id: newNodeId, 
+          messe: 'New Messege'
+        },
+        
       };
 
-      setNodes((nds) => nds.concat(newNode));
+      setNodes((nds) => [...nds, newNode]);
     },
     [reactFlowInstance]
   );
 
   return (
-    <div className="app-wrapper">
+    <div className="app-wrapper" style={{ height: "100vh" }}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -95,8 +97,8 @@ function App() {
         onDragOver={onDragOver}
         nodeTypes={nodeTypes}
         fitView
-        fitViewOptions={fitViewOptions}
-        deleteKeyCode={['Delete', 'Backspace']}
+        fitViewOptions={{ padding: 100 }}
+        deleteKeyCode={["Delete", "Backspace"]}
       >
         <Background />
         <Controls />
