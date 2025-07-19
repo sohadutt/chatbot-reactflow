@@ -11,7 +11,7 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
-import CreateNodes from "./component/createNodes.jsx";
+import CreateNodes from "./component/CreateNodes.jsx";
 import { BaseNodeFullDemo } from "./component/BaseNodeFullDemo.jsx";
 
 const nodeTypes = {
@@ -26,8 +26,9 @@ const initialNodes = [
     id: "1",
     type: "baseNodeFull",
     position: { x: 200, y: 200 },
-    data: { id: "1", 
-      messe: 'New Text ${id}' 
+    data: {
+      id: "1",
+      message: `New Text Messege 1`,
     },
   },
 ];
@@ -67,22 +68,19 @@ function App() {
         x: event.clientX - bounds.left,
         y: event.clientY - bounds.top,
       });
-
-      const newNodeId = getId();
-      const newNode = {
-        id: newNodeId,
-        type: "baseNodeFull",
-        position,
-        data: { id: newNodeId, 
-          messe: 'New Messege'
-        },
-        
-      };
-
-      setNodes((nds) => [...nds, newNode]);
     },
     [reactFlowInstance]
   );
+
+  const onNodeClick = () => {
+
+  }
+
+
+  const onPaneClick = () => {
+    
+  }
+
 
   return (
     <div className="app-wrapper" style={{ height: "100vh" }}>
@@ -99,6 +97,8 @@ function App() {
         fitView
         fitViewOptions={{ padding: 100 }}
         deleteKeyCode={["Delete", "Backspace"]}
+        onNodeClick={onNodeClick}
+        onPaneClick={onPaneClick}
       >
         <Background />
         <Controls />

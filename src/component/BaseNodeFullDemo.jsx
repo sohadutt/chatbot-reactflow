@@ -5,7 +5,7 @@ import {
   BaseNodeContent,
   BaseNodeHeader,
   BaseNodeHeaderTitle,
-} from "@/components/base-node"; // Make sure this file exists
+} from "@/components/base-node";
 
 const WhatsAppIcon = () => (
   <svg
@@ -38,9 +38,7 @@ export const BaseNodeFullDemo = memo(({ data }) => {
       </BaseNodeHeader>
 
       <BaseNodeContent className="p-4">
-        <p className="text-xs text-muted-foreground">
-          {data.messe}
-        </p>
+        <p className="text-xs text-muted-foreground">{data.message}</p>
       </BaseNodeContent>
     </BaseNode>
   );

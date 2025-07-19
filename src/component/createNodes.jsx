@@ -2,11 +2,12 @@ import '../App.css';
 
 function CreateNodes({ setNodes, getId }) {
   const addCustomNode = () => {
+    const newId = getId();
     const newNode = {
-      id: getId(),
+      id: newId,
       type: 'baseNodeFull',
       position: { x: Math.random() * 300, y: Math.random() * 300 },
-      data: {},
+      data: { message: `New Text Message ${newId}` },
     };
     setNodes((nds) => [...nds, newNode]);
   };
