@@ -1,4 +1,5 @@
 import { memo } from "react";
+import '../App.css';
 import { Handle, Position } from "@xyflow/react";
 import {
   BaseNode,
@@ -24,12 +25,12 @@ export const BaseNodeFullDemo = memo(({ data }) => {
       <Handle
         type="target"
         position={Position.Left}
-        className="w-10 h-10 bg-green-600 border-none"
+        className="!w-3 !h-3 !bg-emerald-950 !border-b-emerald-200"
       />
       <Handle
         type="source"
         position={Position.Right}
-        className="w-10 h-10 bg-teal-200 border-none"
+        className="!w-3 !h-3 !bg-emerald-950 !border-b-emerald-200" 
       />
 
       <BaseNodeHeader className="bg-teal-300 text-black rounded-t-md px-3 py-2 flex items-center gap-2">
