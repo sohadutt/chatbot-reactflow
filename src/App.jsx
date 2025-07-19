@@ -11,7 +11,7 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
-import CreateNodes from "./component/CreateNodes.jsx";
+import CreateNodes from "./component/createNodes.jsx";
 import { BaseNodeFullDemo } from "./component/BaseNodeFullDemo.jsx";
 
 const nodeTypes = {
