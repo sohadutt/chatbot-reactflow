@@ -16,7 +16,7 @@ A visual node-based editor built using [React Flow](https://reactflow.dev/), des
 
 ### 🚀 Live Demo
 
-[![Live Demo](https://img.shields.io/badge/Live-Link-blue?style=for-the-badge)]([https://sohadutt.github.io/chatbot-reactflow](https://chatbot-reactflow-z4e9.vercel.app))
+[![Live Demo](https://img.shields.io/badge/Live-Link-blue?style=for-the-badge)](https://chatbot-reactflow-z4e9.vercel.app)
 
 ---
 
