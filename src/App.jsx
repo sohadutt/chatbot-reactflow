@@ -42,7 +42,6 @@ function App() {
   const [selectedNode, setSelectedNode] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
-
   const onNodesChange = useCallback(
     (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
     []
@@ -76,7 +75,7 @@ function App() {
   );
 
   const onNodeClick = useCallback((event, node) => {
-    setSelectedNode(node);
+    setSelectedNode({ ...node, isEditing: false });
   }, []);
 
   const onPaneClick = useCallback(() => {
@@ -189,26 +188,73 @@ function App() {
         >
           {selectedNode ? (
             <>
-              <h3>Edit Node Message</h3>
-              <textarea
-                rows={5}
-                style={{ width: "100%" }}
-                value={selectedNode.data.message}
-                onChange={(e) => {
-                  const newMessage = e.target.value;
-                  setNodes((nds) =>
-                    nds.map((node) =>
-                      node.id === selectedNode.id
-                        ? { ...node, data: { ...node.data, message: newMessage } }
-                        : node
-                    )
-                  );
-                  setSelectedNode((node) => ({
-                    ...node,
-                    data: { ...node.data, message: newMessage },
-                  }));
-                }}
-              />
+              <h3>Node Message</h3>
+
+              {!selectedNode.isEditing ? (
+                <>
+                  <p>{selectedNode.data.message}</p>
+                  <button
+                    style={{
+                      marginTop: "10px",
+                      padding: "6px 12px",
+                      backgroundColor: "#007bff",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      setSelectedNode((node) => ({
+                        ...node,
+                        isEditing: true,
+                      }));
+                    }}
+                  >
+                    💬 Edit Message
+                  </button>
+                </>
+              ) : (
+                <>
+                  <textarea
+                    rows={5}
+                    style={{ width: "100%", background: "white", border: "1px solid black", margin: "10px" }}
+                    value={selectedNode.data.message}
+                    onChange={(e) => {
+                      const newMessage = e.target.value;
+                      setNodes((nds) =>
+                        nds.map((node) =>
+                          node.id === selectedNode.id
+                            ? { ...node, data: { ...node.data, message: newMessage } }
+                            : node
+                        )
+                      );
+                      setSelectedNode((node) => ({
+                        ...node,
+                        data: { ...node.data, message: newMessage },
+                      }));
+                    }}
+                  />
+                  <button
+                    style={{
+                      marginTop: "10px",
+                      padding: "6px 12px",
+                      backgroundColor: "green",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() =>
+                      setSelectedNode((node) => ({
+                        ...node,
+                        isEditing: false,
+                      }))
+                    }
+                  >
+                    Save
+                  </button>
+                </>
+              )}
             </>
           ) : (
             <p>Select a node to edit its message</p>
