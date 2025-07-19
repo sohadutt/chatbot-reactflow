@@ -40,6 +40,8 @@ function App() {
   const [edges, setEdges] = useState(initialEdges);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [selectedNode, setSelectedNode] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+
 
   const onNodesChange = useCallback(
     (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
@@ -90,7 +92,8 @@ function App() {
 
     const unconnectedNodes = nodes.filter((node) => !connectedNodeIds.has(node.id));
     if (unconnectedNodes.length > 0) {
-      alert("Error: Some nodes are not connected to any edge.");
+      setErrorMessage("Cannot save flow: some nodes are not connected.");
+      setTimeout(() => setErrorMessage(null), 3000);
     } else {
       alert("Config saved successfully!");
     }
@@ -98,6 +101,27 @@ function App() {
 
   return (
     <div className="app-wrapper" style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+
+      {errorMessage && (
+        <div
+          style={{
+            position: "absolute",
+            top: 10,
+            left: "50%",
+            transform: "translateX(-50%)",
+            backgroundColor: "white",
+            color: "red",
+            padding: "10px 20px",
+            borderRadius: "10px",
+            zIndex: 1000,
+            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+            border: "2px solid red",
+          }}
+        >
+          {errorMessage}
+        </div>
+      )}
+
       {/* Header */}
       <div
         style={{
